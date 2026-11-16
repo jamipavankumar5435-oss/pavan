@@ -1,0 +1,280 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Crop Yield Prediction</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <header>
+
+        <div class="logo">🌾</div>
+
+        <h1>Crop Yield Prediction</h1>
+
+        <p>
+            Multi-Source Agricultural Data Analytics
+        </p>
+
+        <span class="model">
+            Selected Model: {{ model_name }}
+        </span>
+
+    </header>
+
+
+    <form method="POST">
+
+        <h2>Enter Agricultural Details</h2>
+
+        <div class="form-grid">
+
+            <div class="field">
+
+                <label>Year</label>
+
+                <input type="number"
+                       name="year"
+                       min="2000"
+                       max="2020"
+                       value="{{ form_data.get('year', '2020') }}"
+                       required>
+
+            </div>
+
+
+            <div class="field">
+
+                <label>State</label>
+
+                <select name="state" required>
+
+                    {% for state in states %}
+
+                    <option value="{{ state }}"
+                        {% if form_data.get('state') == state %}selected{% endif %}>
+                        {{ state }}
+                    </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+
+            <div class="field">
+
+                <label>Crop</label>
+
+                <select name="crop" required>
+
+                    {% for crop in crops %}
+
+                    <option value="{{ crop }}"
+                        {% if form_data.get('crop') == crop %}selected{% endif %}>
+                        {{ crop }}
+                    </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+
+            <div class="field">
+
+                <label>Season</label>
+
+                <select name="season" required>
+
+                    {% for season in seasons %}
+
+                    <option value="{{ season }}"
+                        {% if form_data.get('season') == season %}selected{% endif %}>
+                        {{ season }}
+                    </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+
+            <div class="field">
+
+                <label>Area (hectares)</label>
+
+                <input type="number"
+                       name="area"
+                       min="0.001"
+                       step="any"
+                       placeholder="Example: 100"
+                       value="{{ form_data.get('area', '') }}"
+                       required>
+
+            </div>
+
+
+            <div class="field">
+
+                <label>Annual Rainfall (mm)</label>
+
+                <input type="number"
+                       name="annual_rainfall"
+                       min="0"
+                       step="any"
+                       placeholder="Example: 1200"
+                       value="{{ form_data.get('annual_rainfall', '') }}"
+                       required>
+
+            </div>
+
+
+            <div class="field">
+
+                <label>Fertilizer Usage (tonnes)</label>
+
+                <input type="number"
+                       name="fertilizer"
+                       min="0"
+                       step="any"
+                       placeholder="Example: 500"
+                       value="{{ form_data.get('fertilizer', '') }}"
+                       required>
+
+            </div>
+
+
+            <div class="field">
+
+                <label>Pesticide Usage (tonnes)</label>
+
+                <input type="number"
+                       name="pesticide"
+                       min="0"
+                       step="any"
+                       placeholder="Example: 50"
+                       value="{{ form_data.get('pesticide', '') }}"
+                       required>
+
+            </div>
+
+
+            <div class="field">
+
+                <label>Average Temperature (°C)</label>
+
+                <input type="number"
+                       name="avg_temperature"
+                       min="-5"
+                       max="50"
+                       step="any"
+                       placeholder="Example: 27"
+                       value="{{ form_data.get('avg_temperature', '') }}"
+                       required>
+
+            </div>
+
+
+            <div class="field">
+
+                <label>Average Humidity (%)</label>
+
+                <input type="number"
+                       name="avg_humidity"
+                       min="0"
+                       max="100"
+                       step="any"
+                       placeholder="Example: 70"
+                       value="{{ form_data.get('avg_humidity', '') }}"
+                       required>
+
+            </div>
+
+
+            <div class="field">
+
+                <label>Weather Dataset Rainfall (mm)</label>
+
+                <input type="number"
+                       name="weather_rainfall"
+                       min="0"
+                       step="any"
+                       placeholder="Example: 1100"
+                       value="{{ form_data.get('weather_rainfall', '') }}"
+                       required>
+
+            </div>
+
+        </div>
+
+
+        <button type="submit">
+            Predict Crop Yield
+        </button>
+
+
+        {% if prediction is not none %}
+
+        <div class="result">
+
+            <h2>Prediction Result</h2>
+
+            <h1>{{ prediction }}</h1>
+
+            <p>
+                Estimated Yield (Metric Tonnes per Hectare)
+            </p>
+
+        </div>
+
+        {% endif %}
+
+
+        {% if error %}
+
+        <div class="error">
+
+            {{ error }}
+
+        </div>
+
+        {% endif %}
+
+    </form>
+
+
+    <footer>
+
+        <p>
+            Scalable Big Data Analytics for Crop Yield Prediction
+        </p>
+
+        <p>
+            Powered by Machine Learning and Flask
+        </p>
+
+    </footer>
+
+</div>
+
+</body>
+
+</html>
