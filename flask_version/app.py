@@ -1,4 +1,5 @@
-
+import os
+import urllib.request
 import joblib
 import pandas as pd
 
@@ -6,8 +7,29 @@ from flask import Flask, render_template, request
 
 app = Flask(__name__)
 
-# Load the saved model package
-bundle = joblib.load("crop_yield_model.joblib")
+# ==========================================
+# DOWNLOAD TRAINED MODEL FROM GITHUB RELEASE
+# ==========================================
+
+MODEL_PATH = "crop_yield_model.joblib"
+
+MODEL_URL = "PASTE_YOUR_GITHUB_RELEASE_ASSET_URL_HERE"
+
+if not os.path.exists(MODEL_PATH):
+    print("Downloading trained model...")
+
+    urllib.request.urlretrieve(
+        MODEL_URL,
+        MODEL_PATH
+    )
+
+    print("Model downloaded successfully!")
+
+# ==========================================
+# LOAD SAVED MODEL PACKAGE
+# ==========================================
+
+bundle = joblib.load(MODEL_PATH)
 
 model = bundle["model"]
 
@@ -21,6 +43,10 @@ seasons = bundle["seasons"]
 
 best_model_name = bundle["best_model_name"]
 
+
+# ==========================================
+# HOME PAGE AND CROP YIELD PREDICTION
+# ==========================================
 
 @app.route("/", methods=["GET", "POST"])
 def home():
@@ -86,7 +112,9 @@ def home():
                 raise ValueError("Invalid season selected.")
 
             if area <= 0:
-                raise ValueError("Area must be greater than zero.")
+                raise ValueError(
+                    "Area must be greater than zero."
+                )
 
             if min(
                 annual_rainfall,
@@ -109,7 +137,10 @@ def home():
                     "Temperature must be between -5 and 50."
                 )
 
-            # Feature engineering must match training
+            # ==================================
+            # FEATURE ENGINEERING
+            # ==================================
+
             fertilizer_per_ha = fertilizer / area
 
             pesticide_per_ha = pesticide / area
@@ -144,10 +175,18 @@ def home():
 
             }
 
+            # ==================================
+            # PREPARE INPUT DATA
+            # ==================================
+
             input_df = pd.DataFrame(
                 [input_data],
                 columns=feature_columns
             )
+
+            # ==================================
+            # PREDICT CROP YIELD
+            # ==================================
 
             result = model.predict(input_df)[0]
 
@@ -184,6 +223,10 @@ def home():
 
     )
 
+
+# ==========================================
+# RUN FLASK APPLICATION
+# ==========================================
 
 if __name__ == "__main__":
 
