@@ -13,7 +13,7 @@ app = Flask(__name__)
 
 MODEL_PATH = "crop_yield_model.joblib"
 
-MODEL_URL = "PASTE_YOUR_GITHUB_RELEASE_ASSET_URL_HERE"
+MODEL_URL = "https://github.com/jamipavankumar5435-oss/pavan/releases/download/v1.0.0/crop_yield_model.joblib"
 
 if not os.path.exists(MODEL_PATH):
     print("Downloading trained model...")
